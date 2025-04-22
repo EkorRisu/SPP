@@ -4,10 +4,7 @@
 
 @section('content')
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center my-4">
-        <h2>Pembayaran SPP</h2>
-        <a href="{{ route('payments.create') }}" class="btn btn-primary">Bayar SPP</a>
-    </div>
+    <h2 class="my-4">Pembayaran SPP</h2>
 
     @if (session('success'))
         <div class="alert alert-success">
@@ -19,25 +16,35 @@
         <thead class="table-dark">
             <tr>
                 <th>No</th>
+                <th>Nama Siswa</th>
                 <th>Jumlah</th>
-                <th>Status</th>
                 <th>Tanggal Bayar</th>
+                <th>Status</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @foreach ($payments as $payment)
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>Rp {{ number_format($payment->amount, 0, ',', '.') }}</td>
-                    <td>
-                        @if ($payment->status === 'pending')
-                            <span class="badge bg-warning">Menunggu Konfirmasi</span>
-                        @else
-                            <span class="badge bg-success">Dikonfirmasi</span>
-                        @endif
-                    </td>
-                    <td>{{ \Carbon\Carbon::parse($payment->tanggal_bayar)->format('d M Y') }}</td>
-                </tr>
+            @foreach ($payments as $index => $payment)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $payment->user->name }}</td>
+                <td>Rp{{ number_format($payment->amount, 0, ',', '.') }}</td>
+                <td>{{ $payment->tanggal_bayar }}</td>
+                <td>{{ ucfirst($payment->status) }}</td>
+                <td>
+                    @if ($payment->status === 'pending')
+                        <form action="{{ route('payments.verify', $payment->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn btn-success">Verifikasi</button>
+                        </form>
+                    @endif
+
+                    @if ($payment->status === 'verified')
+                        <a href="{{ route('payments.receipt', $payment->id) }}" class="btn btn-primary">Unduh PDF</a>
+                    @endif
+                </td>
+            </tr>
             @endforeach
         </tbody>
     </table>

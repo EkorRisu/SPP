@@ -10,10 +10,10 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',  
+        'user_id',
         'amount',
         'status',
-        'tanggal_bayar', // Tambahkan ini
+        'tanggal_bayar',
     ];
 
     // Relasi ke tabel users

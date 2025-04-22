@@ -13,15 +13,13 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->decimal('amount', 10, 2);
-            $table->string('status')->default('pending');
-            $table->date('tanggal_bayar')->nullable(); // Perbaikan
-            $table->timestamps();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relasi ke tabel users
+            $table->decimal('amount', 10, 2); // Jumlah pembayaran
+            $table->string('status')->default('pending'); // Status pembayaran (pending/verified)
+            $table->date('tanggal_bayar')->nullable(); // Tanggal pembayaran
+            $table->timestamps(); // Kolom created_at dan updated_at
         });
     }
-    
-
 
     /**
      * Reverse the migrations.
